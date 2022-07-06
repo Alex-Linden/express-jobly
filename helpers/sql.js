@@ -1,11 +1,13 @@
+"use strict";
+
 const { BadRequestError } = require("../expressError");
 
-/** This takes in data to update and json to sql object.
+/** This takes in a object of data to update and an object of json to sql.
  *
  * restructures the data to update into a sanatized sql query
  *
  * returns sql query syntax and an array of the object values
- * for sql queries for partial data updates. saves having to write
+ * for the query for partial data updates. saves having to write
  * queries for every use case
  *
 */
