@@ -66,6 +66,16 @@ class Company {
     return companiesRes.rows;
   }
 
+  /**Find filtered list of companies.
+   *
+   * takes in at least 1 but up to 3 optional filtering params
+   * of name, min employees and/or max employees
+   *
+   * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
+   * for results matching filter
+   */
+  static async filter(obj){}
+
   /** Given a company handle, return data about company.
    *
    * Returns { handle, name, description, numEmployees, logoUrl, jobs }
