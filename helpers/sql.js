@@ -2,7 +2,7 @@
 
 const { BadRequestError } = require("../expressError");
 
-/** This takes in a object of data to update and an object of json to sql.
+/** This takes in a object of data to update and an optional object of json to sql.
  *
  * restructures the data to update into a sanatized sql query
  *
