@@ -27,4 +27,42 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
-module.exports = { sqlForPartialUpdate };
+/**This takes an object of optional search params.
+ *
+ * restructures the data to update into a sanatized sql query
+ *
+ * it returns an object with SQL query string for the WHERE clause
+ *  and an array of matching sanitized data
+ */
+function sqlForFilterSearch(filterParams){
+  const {minEmployees, maxEmployees, name} = filterParams
+  //test to make sure filter params were passed
+
+  if (minEmployees > maxEmployees) {
+    throw new BadRequestError("Min emplyees is greater than Max");
+  }
+
+  const whereParams = [];
+  const values = [];
+
+    if (minEmployees) {
+      values.push(minEmployees);
+      whereParams.push(`num_employees>= $${values.indexOf(minEmployees) + 1}`);
+    }
+    if (maxEmployees) {
+      values.push(maxEmployees);
+      whereParams.push(`num_employees<= $${values.indexOf(maxEmployees) + 1}`);
+    }
+    if (name){
+      let sqlName = `%${name}%`;
+      values.push(sqlName);
+      whereParams.push(`name ILIKE $${values.indexOf(sqlName) + 1}`);
+    }
+
+    return {
+      whereParams,
+      values
+    }
+}
+
+module.exports = { sqlForPartialUpdate, sqlForFilterSearch };

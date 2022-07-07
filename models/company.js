@@ -3,7 +3,7 @@
 const { max } = require("pg/lib/defaults");
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate } = require("../helpers/sql");
+const { sqlForPartialUpdate, sqlForFilterSearch } = require("../helpers/sql");
 
 /** Related functions for companies. */
 
@@ -78,30 +78,8 @@ class Company {
    * Throws an error if min employees is greater than max
    */
   static async filter(filterParams) {
-    //test to make sure filter params were passed
-    const keys = Object.keys(filterParams);
-    if (filterParams.minEmployees > filterParams.maxEmployees) {
-      throw new BadRequestError("Min emplyees is greater than Max");
-    }
 
-    const whereParams = [];
-    const values = [];
-    for (let key of keys) {
-      if (key === "minEmployees") {
-        values.push(filterParams[key]);
-        whereParams.push(`num_employees>= $${values.indexOf(filterParams[key]) + 1}`);
-      } else if (key === "maxEmployees") {
-        values.push(filterParams[key]);
-        whereParams.push(`num_employees<= $${values.indexOf(filterParams[key]) + 1}`);
-      } else {
-        let str = `%${filterParams[key]}%`;
-        values.push(str);
-        whereParams.push(`${key} ILIKE $${values.indexOf(str) + 1}`);
-      }
-    }
-
-    // console.log("whereParams=", whereParams);
-    //
+    const { whereParams, values } = sqlForFilterSearch(filterParams);
 
     const query = `SELECT handle,
     name,
@@ -110,14 +88,10 @@ class Company {
     logo_url AS "logoUrl"
       FROM companies
       WHERE ${whereParams.join(" AND ")}`;
-    console.log("query =", query)
-    console.log("values", values);
+
     const companiesRes = await db.query(query, values);
 
     return companiesRes.rows;
-    //
-    // ,
-    //   [values]
   }
 
   /** Given a company handle, return data about company.
