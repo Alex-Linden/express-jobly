@@ -14,7 +14,7 @@ const filterData = { name: "test", minEmployees: 1, maxEmployees: 3 };
 
 
 describe("sqlForPartialUpdate", function () {
-  test("works with only provided data", async function () {
+  test("works with only provided data", function () {
     const results = sqlForPartialUpdate(dataToUpdate, jsToSql);
     expect(results).toEqual({
       setCols: `"first_test"=$1, "second_test"=$2`,

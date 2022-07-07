@@ -50,10 +50,28 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  * Authorization required: none
  */
 
+// parameters passed in the url
+// json schema to validate what's coming into route
+// update the route
+// write tests first
+// write to convert parameters into an object, regardless
+
+
 router.get("/", async function (req, res, next) {
+
+
   const companies = await Company.findAll();
+
+
+
+
   return res.json({ companies });
 });
+
+
+
+
+
 
 /** GET /[handle]  =>  { company }
  *
