@@ -87,7 +87,8 @@ class Company {
     num_employees AS "numEmployees",
     logo_url AS "logoUrl"
       FROM companies
-      WHERE ${whereParams.join(" AND ")}`;
+      WHERE ${whereParams.join(" AND ")}
+      ORDER BY name`;
 
     const companiesRes = await db.query(query, values);
 
