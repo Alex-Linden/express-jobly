@@ -141,13 +141,14 @@ describe("GET /companies", function () {
     expect(resp.body).toEqual({ companies: [] });
   });
 
-  test("fails returns badRequestError", async function () {
-    try {
-      await request(app).get("/companies?minEmployees=3&maxEmployees=1");
-      throw new Error("Fail test, you shouldn't get here");
-    } catch (err) {
-      expect(err instanceof BadRequestError).toBeTruthy();
-    }
+  test("fails returns 400 if min > max", async function () {
+    const resp = await request(app).get("/companies?minEmployees=3&maxEmployees=1");
+    expect(resp.statusCode).toEqual(400);
+  });
+
+  test("fails returns 404 if validator doesn't pass", async function () {
+    const resp = await request(app).get("/companies?minEmployees=false");
+    expect(resp.statusCode).toEqual(400);
   });
 
   test("fails: test next() handler", async function () {

@@ -50,22 +50,18 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  *
  * Authorization required: none
  */
-
-// parameters passed in the url
-// update the route
-// write to convert parameters into an object, regardless
-
-
 router.get("/", async function (req, res, next) {
   let companies;
-  console.log(req.query)
-  if (req.query.name || req.query.minEmployees || req.query.maxEmployees) {
+  let { minEmployees, maxEmployees, name } = req.query;
+  if (minEmployees) minEmployees = parseInt(minEmployees);
+  if (maxEmployees) maxEmployees = parseInt(maxEmployees);
+
+  if (name || minEmployees || maxEmployees) {
     const filterParams = {
-      minEmployees: parseInt(req.query.minEmployees),
-      maxEmployees: parseInt(req.query.maxEmployees),
-      name: req.query.name,
+      minEmployees,
+      maxEmployees,
+      name,
     };
-    console.log("these are filterParams: ", filterParams);
     const validator = jsonschema.validate(
       filterParams,
       companyFilterSchema,
@@ -74,10 +70,10 @@ router.get("/", async function (req, res, next) {
     if (!validator.valid) {
       const errs = validator.errors.map(e => e.stack);
       throw new BadRequestError(errs);
+    } else {
+      companies = await Company.filter(filterParams);
     }
-    companies = await Company.filter(filterParams);
   } else {
-
     companies = await Company.findAll();
   }
 
