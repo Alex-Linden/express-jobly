@@ -54,12 +54,12 @@ describe("sqlForFilterSearch", function () {
     });
   });
 
-  test("fails if min employees is greater than maxEmployees", function(){
+  test("fails if min employees is greater than maxEmployees", function () {
     try {
       sqlForFilterSearch({ minEmployees: 4, maxEmployees: 3 });
       throw new Error("Fail test, you shouldn't get here");
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
     }
-  })
+  });
 });
