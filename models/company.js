@@ -3,7 +3,7 @@
 const { max } = require("pg/lib/defaults");
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate, sqlForFilterSearch } = require("../helpers/sql");
+const { sqlForPartialUpdate } = require("../helpers/sql");
 
 /** Related functions for companies. */
 
@@ -174,4 +174,42 @@ class Company {
 }
 
 
-module.exports = Company;
+/**This takes an object of optional search params.
+ *
+ * restructures the data to update into a sanatized sql query
+ *
+ * it returns an object with SQL query string for the WHERE clause
+ *  and an array of matching sanitized data
+ *
+ */
+ function sqlForFilterSearch(filterParams) {
+  const { minEmployees, maxEmployees, name } = filterParams;
+  //test to make sure filter params were passed
+
+  if (minEmployees > maxEmployees) {
+    throw new BadRequestError("Min emplyees is greater than Max");
+  }
+
+  const whereParams = [];
+  const values = [];
+  if (minEmployees !== undefined) {
+    values.push(minEmployees);
+    whereParams.push(`num_employees>= $${values.length}`);
+  }
+  if (maxEmployees !== undefined) {
+    values.push(maxEmployees);
+    whereParams.push(`num_employees<= $${values.length}`);
+  }
+  if (name) {
+    let sqlName = `%${name}%`;
+    values.push(sqlName);
+    whereParams.push(`name ILIKE $${values.length}`);
+  }
+
+  return {
+    whereParams,
+    values
+  };
+}
+
+module.exports = { Company, sqlForFilterSearch };

@@ -2,7 +2,7 @@
 
 const db = require("../db.js");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const Company = require("./company.js");
+const { Company, sqlForFilterSearch } = require("./company.js");
 const {
   commonBeforeAll,
   commonBeforeEach,
@@ -88,6 +88,31 @@ describe("findAll", function () {
 });
 
 /************************************** filter */
+
+describe("sqlForFilterSearch", function () {
+  const filterData = { name: "test", minEmployees: 1, maxEmployees: 3 };
+  //TODO: works with not all params
+  test("works with all provided params", function () {
+    const results = sqlForFilterSearch(filterData);
+    expect(results).toEqual({
+      whereParams: [
+        "num_employees>= $1",
+        "num_employees<= $2",
+        "name ILIKE $3",
+      ],
+      values: [1, 3, "%test%"]
+    });
+  });
+
+  test("fails if min employees is greater than maxEmployees", function () {
+    try {
+      sqlForFilterSearch({ minEmployees: 4, maxEmployees: 3 });
+      throw new Error("Fail test, you shouldn't get here");
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+});
 
 describe("filter", function () {
   test("works: for names case insensitive", async function () {
