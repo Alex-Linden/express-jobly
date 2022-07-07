@@ -98,7 +98,8 @@ describe("GET /companies", function () {
   });
 
   test("works for all search params", async function () {
-    const resp = await request(app).get("/companies?minEmployees=1&maxEmployees=2&name=c");
+    const resp = await request(app).get(
+      "/companies?minEmployees=1&maxEmployees=2&name=c");
     expect(resp.body).toEqual({
       companies:
         [
@@ -146,7 +147,7 @@ describe("GET /companies", function () {
     expect(resp.statusCode).toEqual(400);
   });
 
-  test("fails returns 404 if validator doesn't pass", async function () {
+  test("fails returns 400 if validator doesn't pass", async function () {
     const resp = await request(app).get("/companies?name=wa&minEmployees=ab");
     expect(resp.statusCode).toEqual(400);
   });

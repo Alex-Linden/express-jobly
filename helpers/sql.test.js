@@ -10,7 +10,7 @@ const jsToSql = {
   thirdTest: "third_test",
 };
 
-const filterData = { name: "test", minEmployees: 1, maxEmployees: 3 };
+
 
 
 describe("sqlForPartialUpdate", function () {
@@ -42,6 +42,8 @@ describe("sqlForPartialUpdate", function () {
 });
 
 describe("sqlForFilterSearch", function () {
+  const filterData = { name: "test", minEmployees: 1, maxEmployees: 3 };
+  //TODO: works with not all params
   test("works with all provided params", function () {
     const results = sqlForFilterSearch(filterData);
     expect(results).toEqual({

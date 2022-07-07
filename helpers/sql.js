@@ -9,7 +9,7 @@ const { BadRequestError } = require("../expressError");
  * returns sql query syntax and an array of the object values
  * for the query for partial data updates. saves having to write
  * queries for every use case
- *
+ * TODO: add examples
 */
 
 function sqlForPartialUpdate(dataToUpdate, jsToSql) {
@@ -33,9 +33,10 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
  *
  * it returns an object with SQL query string for the WHERE clause
  *  and an array of matching sanitized data
+ * TODO: move into company model
  */
 function sqlForFilterSearch(filterParams){
-  const {minEmployees, maxEmployees, name} = filterParams
+  const {minEmployees, maxEmployees, name} = filterParams;
   //test to make sure filter params were passed
 
   if (minEmployees > maxEmployees) {
@@ -44,7 +45,7 @@ function sqlForFilterSearch(filterParams){
 
   const whereParams = [];
   const values = [];
-
+//TODO: not undefined, length of values
     if (minEmployees) {
       values.push(minEmployees);
       whereParams.push(`num_employees>= $${values.indexOf(minEmployees) + 1}`);
