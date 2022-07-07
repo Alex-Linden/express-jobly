@@ -87,29 +87,35 @@ class Company {
     const whereParams = [];
     const values = [];
     for (let key of keys) {
-      values.push(filterParams[key]);
       if (key === "minEmployees") {
-        whereParams.push(`num_employees>=$${values.indexOf(filterParams[key]) + 1}`);
+        values.push(filterParams[key]);
+        whereParams.push(`num_employees>= $${values.indexOf(filterParams[key]) + 1}`);
       } else if (key === "maxEmployees") {
-        whereParams.push(`num_employees<=$${values.indexOf(filterParams[key]) + 1}`);
+        values.push(filterParams[key]);
+        whereParams.push(`num_employees<= $${values.indexOf(filterParams[key]) + 1}`);
       } else {
-        whereParams.push(`"${key}" ILIKE $${values.indexOf(filterParams[key]) + 1}`);
+        let str = `%${filterParams[key]}%`;
+        values.push(str);
+        whereParams.push(`${key} ILIKE $${values.indexOf(str) + 1}`);
       }
     }
 
-    console.log("whereParams=", whereParams);
+    // console.log("whereParams=", whereParams);
+    //
+
+    const query = `SELECT handle,
+    name,
+    description,
+    num_employees AS "numEmployees",
+    logo_url AS "logoUrl"
+      FROM companies
+      WHERE ${whereParams.join(" AND ")}`;
+    console.log("query =", query)
     console.log("values", values);
-    const companiesRes = await db.query(
-      `SELECT handle,
-              name,
-              description,
-              num_employees AS "numEmployees",
-              logo_url AS "logoUrl"
-         FROM companies
-         WHERE name ILIKE c1`);
+    const companiesRes = await db.query(query, values);
 
     return companiesRes.rows;
-    //${whereParams.join(" AND ")}
+    //
     // ,
     //   [values]
   }

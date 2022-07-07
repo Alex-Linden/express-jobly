@@ -92,6 +92,7 @@ describe("findAll", function () {
 describe("filter", function () {
   test("works: for names case insensitive", async function () {
     let companies = await Company.filter({ name: "C1" });
+    console.log("companies", companies)
     expect(companies).toEqual([
       {
         handle: "c1",
