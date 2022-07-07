@@ -53,10 +53,13 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 router.get("/", async function (req, res, next) {
   let companies;
   let { minEmployees, maxEmployees, name } = req.query;
-  if (minEmployees) minEmployees = parseInt(minEmployees);
-  if (maxEmployees) maxEmployees = parseInt(maxEmployees);
+  if (minEmployees) minEmployees = Number(minEmployees);
+  if (maxEmployees) maxEmployees = Number(maxEmployees);
 
-  if (name || minEmployees || maxEmployees) {
+
+  if (name ||
+     (minEmployees !== 0 || minEmployees !== undefined) ||
+     (maxEmployees !==0 || maxEmployees !== undefined)) {
     const filterParams = {
       minEmployees,
       maxEmployees,

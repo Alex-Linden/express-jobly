@@ -147,7 +147,7 @@ describe("GET /companies", function () {
   });
 
   test("fails returns 404 if validator doesn't pass", async function () {
-    const resp = await request(app).get("/companies?minEmployees=false");
+    const resp = await request(app).get("/companies?name=wa&minEmployees=ab");
     expect(resp.statusCode).toEqual(400);
   });
 
