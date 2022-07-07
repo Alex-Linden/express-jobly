@@ -56,10 +56,9 @@ router.get("/", async function (req, res, next) {
   if (minEmployees) minEmployees = Number(minEmployees);
   if (maxEmployees) maxEmployees = Number(maxEmployees);
 
-
   if (name ||
-     (minEmployees !== 0 || minEmployees !== undefined) ||
-     (maxEmployees !==0 || maxEmployees !== undefined)) {
+    (minEmployees !== 0 && minEmployees !== undefined) ||
+    (maxEmployees !== 0 && maxEmployees !== undefined)) {
     const filterParams = {
       minEmployees,
       maxEmployees,
