@@ -59,12 +59,13 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 router.get("/", async function (req, res, next) {
   let companies;
   console.log(req.query)
-  if (req.query[1]) {
+  if (req.query.name || req.query.minEmployees || req.query.maxEmployees) {
     const filterParams = {
-      minEmployees: req.query.minEmployees,
-      maxEmployees: req.query.maxEmployees,
-      name: req.query.name
+      minEmployees: parseInt(req.query.minEmployees),
+      maxEmployees: parseInt(req.query.maxEmployees),
+      name: req.query.name,
     };
+    console.log("these are filterParams: ", filterParams);
     const validator = jsonschema.validate(
       filterParams,
       companyFilterSchema,
