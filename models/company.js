@@ -106,10 +106,12 @@ class Company {
               num_employees AS "numEmployees",
               logo_url AS "logoUrl"
          FROM companies
-         WHERE ${whereParams.join(" AND ")}`,
-      [values]);
+         WHERE name ILIKE c1`);
 
     return companiesRes.rows;
+    //${whereParams.join(" AND ")}
+    // ,
+    //   [values]
   }
 
   /** Given a company handle, return data about company.
