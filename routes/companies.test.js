@@ -96,6 +96,12 @@ describe("GET /companies", function () {
     });
   });
 
+  test("ok for anon", async function () {
+    const resp = await request(app).get("/companies",
+        request.params);
+    expect(resp.body).toEqual
+
+
   test("fails: test next() handler", async function () {
     // there's no normal failure event which will cause this route to fail ---
     // thus making it hard to test that the error-handler works with it. This

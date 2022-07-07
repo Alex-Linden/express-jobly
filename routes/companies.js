@@ -51,7 +51,6 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  */
 
 // parameters passed in the url
-// json schema to validate what's coming into route
 // update the route
 // write tests first
 // write to convert parameters into an object, regardless
