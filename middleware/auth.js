@@ -43,13 +43,14 @@ function ensureLoggedIn(req, res, next) {
 }
 
 
-/** Middleware called by routes that require user to be Admin.
+/** Middleware called by routes that require user to be logged in and Admin.
  *
  * If not, raises Unauthorized.
  */
 
 function ensureAdmin(req, res, next) {
   try {
+    if (!res.locals.user) throw new UnauthorizedError();
     if (res.locals.user.isAdmin !== true) throw new UnauthorizedError();
     return next();
   } catch (err) {
@@ -57,18 +58,20 @@ function ensureAdmin(req, res, next) {
   }
 }
 
-/** Middleware called by routes that require user to be current user or Admin.
+/** Middleware called by routes that require user to be logged in and,
+ *  current user or Admin.
  *
  * If not, raises Unauthorized.
  */
 function ensureCurrentUserOrAdmin(req, res, next) {
-  const username = req.params.username
+  const username = req.params.username;
   try {
+    if (!res.locals.user) throw new UnauthorizedError();
     if (res.locals.user.isAdmin === true ||
-       res.locals.user.username === username) {
-        return next();
-      }
-      throw new UnauthorizedError();
+      res.locals.user.username === username) {
+      return next();
+    }
+    throw new UnauthorizedError();
   } catch (err) {
     return next(err);
   }

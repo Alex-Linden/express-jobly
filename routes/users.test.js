@@ -99,7 +99,7 @@ describe("POST /users", function () {
       })
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(401);
-  });
+  }); //TODO: clarify test string
 
   test("bad request if missing data", async function () {
     const resp = await request(app)
@@ -159,7 +159,7 @@ describe("GET /users", function () {
         },
       ],
     });
-  });
+  }); //TODO: test string
 
   test("unauth for anon", async function () {
     const resp = await request(app)
@@ -237,7 +237,7 @@ describe("GET /users/:username", function () {
       .get(`/users/nope`)
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(404);
-  });
+  }); //TODO: test for searching other user 401 not 404
 });
 
 /************************************** PATCH /users/:username */

@@ -27,7 +27,7 @@ const router = express.Router();
  * Authorization required: admin
  **/
 
-router.post("/", ensureLoggedIn, ensureAdmin, async function (req, res, next) {
+router.post("/", ensureAdmin, async function (req, res, next) {
   const validator = jsonschema.validate(
     req.body,
     userNewSchema,
@@ -51,7 +51,7 @@ router.post("/", ensureLoggedIn, ensureAdmin, async function (req, res, next) {
  * Authorization required: admin
  **/
 
-router.get("/", ensureLoggedIn, ensureAdmin, async function (req, res, next) {
+router.get("/", ensureAdmin, async function (req, res, next) {
   const users = await User.findAll();
   return res.json({ users });
 });
@@ -64,7 +64,7 @@ router.get("/", ensureLoggedIn, ensureAdmin, async function (req, res, next) {
  * Authorization required: current user or admin
  **/
 
-router.get("/:username", ensureLoggedIn, ensureCurrentUserOrAdmin,
+router.get("/:username", ensureCurrentUserOrAdmin,
   async function (req, res, next) {
     const user = await User.get(req.params.username);
     return res.json({ user });
@@ -81,7 +81,7 @@ router.get("/:username", ensureLoggedIn, ensureCurrentUserOrAdmin,
  * Authorization required: current user or admin
  **/
 
-router.patch("/:username", ensureLoggedIn, ensureCurrentUserOrAdmin,
+router.patch("/:username", ensureCurrentUserOrAdmin,
   async function (req, res, next) {
     const validator = jsonschema.validate(
       req.body,
@@ -103,7 +103,7 @@ router.patch("/:username", ensureLoggedIn, ensureCurrentUserOrAdmin,
  * Authorization required: current user or admin
  **/
 
-router.delete("/:username", ensureLoggedIn, ensureCurrentUserOrAdmin,
+router.delete("/:username", ensureCurrentUserOrAdmin,
   async function (req, res, next) {
     await User.remove(req.params.username);
     return res.json({ deleted: req.params.username });
