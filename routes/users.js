@@ -31,7 +31,7 @@ router.post("/", ensureLoggedIn, ensureAdmin, async function (req, res, next) {
   const validator = jsonschema.validate(
     req.body,
     userNewSchema,
-    {required: true}
+    { required: true }
   );
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
@@ -68,7 +68,7 @@ router.get("/:username", ensureLoggedIn, ensureCurrentUserOrAdmin,
   async function (req, res, next) {
     const user = await User.get(req.params.username);
     return res.json({ user });
-});
+  });
 
 
 /** PATCH /[username] { user } => { user }
@@ -83,19 +83,19 @@ router.get("/:username", ensureLoggedIn, ensureCurrentUserOrAdmin,
 
 router.patch("/:username", ensureLoggedIn, ensureCurrentUserOrAdmin,
   async function (req, res, next) {
-  const validator = jsonschema.validate(
-    req.body,
-    userUpdateSchema,
-    {required: true}
-  );
-  if (!validator.valid) {
-    const errs = validator.errors.map(e => e.stack);
-    throw new BadRequestError(errs);
-  }
+    const validator = jsonschema.validate(
+      req.body,
+      userUpdateSchema,
+      { required: true }
+    );
+    if (!validator.valid) {
+      const errs = validator.errors.map(e => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-  const user = await User.update(req.params.username, req.body);
-  return res.json({ user });
-});
+    const user = await User.update(req.params.username, req.body);
+    return res.json({ user });
+  });
 
 
 /** DELETE /[username]  =>  { deleted: username }
@@ -105,9 +105,9 @@ router.patch("/:username", ensureLoggedIn, ensureCurrentUserOrAdmin,
 
 router.delete("/:username", ensureLoggedIn, ensureCurrentUserOrAdmin,
   async function (req, res, next) {
-  await User.remove(req.params.username);
-  return res.json({ deleted: req.params.username });
-});
+    await User.remove(req.params.username);
+    return res.json({ deleted: req.params.username });
+  });
 
 
 module.exports = router;
