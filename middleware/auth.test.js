@@ -5,6 +5,7 @@ const { UnauthorizedError } = require("../expressError");
 const {
   authenticateJWT,
   ensureLoggedIn,
+  ensureAdmin,
 } = require("./auth");
 
 
@@ -28,6 +29,23 @@ describe("authenticateJWT", function () {
         iat: expect.any(Number),
         username: "test",
         isAdmin: false,
+      },
+    });
+  });
+
+  test("works: if admin", function () {
+    expect.assertions(2);
+    const req = { headers: { authorization: `Bearer ${adminJwt}` } };
+    const res = { locals: {} };
+    const next = function (err) {
+      expect(err).toBeFalsy();
+    };
+    authenticateJWT(req, res, next);
+    expect(res.locals).toEqual({
+      user: {
+        iat: expect.any(Number),
+        username: "testadmin",
+        isAdmin: true,
       },
     });
   });
@@ -82,21 +100,21 @@ describe("ensureAdmin", function () {
   test("works", function () {
     expect.assertions(1);
     const req = {};
-    const res = { locals: { user: { username: "testadmin" } } };
+    const res = { locals: { user: { username: "testadmin", isAdmin: true } } };
     const next = function (err) {
       expect(err).toBeFalsy();
     };
     ensureAdmin(req, res, next);
   });
 
-  test("no Admin if no login", function () {
+  test("fails not Admin", function () {
     expect.assertions(1);
     const req = {};
-    const res = { locals: {} };
+    const res = { locals: { user: { username: "test", isAdmin: false } } };
     const next = function (err) {
       expect(err instanceof UnauthorizedError).toBeTruthy();
     };
-    ensureLoggedIn(req, res, next);
+    ensureAdmin(req, res, next);
   });
 
 });
