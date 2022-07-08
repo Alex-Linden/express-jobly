@@ -42,22 +42,13 @@ function ensureLoggedIn(req, res, next) {
   }
 }
 
-// route to write:
-// function ensureAdmin(....)
-// write tests to ensure access by admin only for certain routes:
-// delete & patch & post
-// update those routes... only write this function once
-
-//1) write tests to see if routes can be accessed ONLY by admin status
-//2) wrtie the middleware function: ensureAdmin()
-//3) user routes too!
 
 /** Middleware called by routes that require user to be Admin.
  *
  * If not, raises Unauthorized.
  */
 
-function ensureAdmin(req, res, next){
+function ensureAdmin(req, res, next) {
   try {
     if (res.locals.user.isAdmin !== true) throw new UnauthorizedError();
     return next();
@@ -66,8 +57,27 @@ function ensureAdmin(req, res, next){
   }
 }
 
+/** Middleware called by routes that require user to be current user or Admin.
+ *
+ * If not, raises Unauthorized.
+ */
+function ensureCurrentUserOrAdmin(req, res, next) {
+  const username = req.params.username
+  try {
+    if (res.locals.user.isAdmin === true ||
+       res.locals.user.username === username) {
+        return next();
+      }
+      throw new UnauthorizedError();
+  } catch (err) {
+    return next(err);
+  }
+}
+
+
 module.exports = {
   authenticateJWT,
   ensureLoggedIn,
   ensureAdmin,
+  ensureCurrentUserOrAdmin,
 };

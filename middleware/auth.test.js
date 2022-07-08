@@ -6,6 +6,7 @@ const {
   authenticateJWT,
   ensureLoggedIn,
   ensureAdmin,
+  ensureCurrentUserOrAdmin,
 } = require("./auth");
 
 
@@ -118,3 +119,37 @@ describe("ensureAdmin", function () {
   });
 
 });
+
+describe("ensureCurrentUserOrAdmin", function () {
+  test("works if admin", function () {
+    expect.assertions(1);
+    const req = { params: { username: "test" } };
+    const res = { locals: { user: { username: "testadmin", isAdmin: true } } };
+    const next = function (err) {
+      expect(err).toBeFalsy();
+    };
+    ensureCurrentUserOrAdmin(req, res, next);
+  });
+
+  test("works if admin", function () {
+    expect.assertions(1);
+    const req = { params: { username: "test" } };
+    const res = { locals: { user: { username: "test", isAdmin: false } } };
+    const next = function (err) {
+      expect(err).toBeFalsy();
+    };
+    ensureCurrentUserOrAdmin(req, res, next);
+  });
+
+  test("fails not current user", function () {
+    expect.assertions(1);
+    const req = { params: { username: "test" } };
+    const res = { locals: { user: { username: "test2", isAdmin: false } } };
+    const next = function (err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    };
+    ensureCurrentUserOrAdmin(req, res, next);
+  });
+
+});
+
